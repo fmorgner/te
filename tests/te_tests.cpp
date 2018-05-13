@@ -14,31 +14,55 @@ struct FilesystemTemplateTest
     {
     static_cast<ConcreteTest *>(this)->GenerateTemplates();
     }
+
+  template<typename RunnerType>
+  bool RunWith(RunnerType & runner)
+    {
+    return runner(static_cast<ConcreteTest *>(this)->GenerateSuite(), ConcreteTest::SuiteName);
+    }
   };
 
 struct SimpleReplacementTest : FilesystemTemplateTest<SimpleReplacementTest>
   {
   static constexpr auto TemplateName = "simple_replacement.tpl";
+  static constexpr auto SuiteName = "Simple variable replacements";
 
-  void GenerateTemplates()
+  auto GenerateTemplates()
     {
     auto output = std::ofstream{TemplateName};
     output << "{{ variable }}";
     }
 
-  void test_simple_variable_replacement()
+  auto GenerateSuite()
     {
-    auto buffer = std::ostringstream{};
-    TMapS2M mVariables{
-        { "variable", {{ "", "replacement" }} }
-    };
-
-    auto oTe = Cte{mVariables, TemplateName};
-
-    buffer << oTe;
-
-    ASSERT_EQUAL(buffer.str(), "replacement");
+    return cute::suite {
+      CUTE_SMEMFUN(SimpleReplacementTest, test_simple_variable_replacement),
+      CUTE_SMEMFUN(SimpleReplacementTest, test_simple_variable_replacement_results_in_empty_string_without_value_for_root_property),
+      };
     }
+
+  private:
+    void test_simple_variable_replacement()
+      {
+      auto buffer = std::ostringstream{};
+      TMapS2M mVariables{
+          { "variable", {{ "", "replacement" }} }
+      };
+
+      buffer << Cte{mVariables, TemplateName};
+      ASSERT_EQUAL("replacement", buffer.str());
+      }
+
+    void test_simple_variable_replacement_results_in_empty_string_without_value_for_root_property()
+      {
+      auto buffer = std::ostringstream{};
+      TMapS2M mVariables{
+          { "variable", {{ "not-the-root", "replacement" }} }
+      };
+
+      buffer << Cte{mVariables, TemplateName};
+      ASSERT_EQUAL("", buffer.str());
+      }
   };
 
 int main(int argc, char const * const * argv)
@@ -46,10 +70,7 @@ int main(int argc, char const * const * argv)
   auto listener = cute::tap_listener<cute::null_listener>{};
   auto runner = cute::makeRunner(listener, argc, argv);
 
-  auto suite = cute::suite{};
+  auto failed = SimpleReplacementTest{}.RunWith(runner);
 
-  auto oSimpleReplacementTest = SimpleReplacementTest{};
-  suite += CUTE_MEMFUN(oSimpleReplacementTest, SimpleReplacementTest, test_simple_variable_replacement);
-
-  return !runner(suite);
+  return !failed;
   }
