@@ -13,13 +13,14 @@ endmacro()
 
 cute_suite("simple_variable_replacement")
 cute_suite("invalid_template_syntax")
+cute_suite("control_flow_constructs")
 
 message(STATUS "Registered Suites: ${TE_TEST_TARGETS}")
 
 add_custom_target("te_tests"
   ALL
   DEPENDS ${TE_TEST_TARGETS}
-  COMMAND ${CMAKE_COMMAND} "--build" "${CMAKE_BINARY_DIR}" "--target" "test"
+  COMMAND "ctest"
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT "Executing 'te' unit tests"
   )
