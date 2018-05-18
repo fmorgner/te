@@ -9,6 +9,11 @@
 
 #include "te.h"
 
+namespace test_suite
+  {
+  extern cutex::NamedSuite suite;
+  }
+
 int main(int argc, char const * const * argv)
   {
   auto xml = cute::xml_file_opener{argc, argv};

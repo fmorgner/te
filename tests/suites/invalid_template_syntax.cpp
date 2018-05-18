@@ -1,6 +1,3 @@
-#ifndef INVALID_TEMPLATE_SYNTAX_H
-#define INVALID_TEMPLATE_SYNTAX_H
-
 #include "cute/cute_equals.h"
 
 #include "../cute/extensions.h"
@@ -46,7 +43,3 @@ namespace test_suite
   };
 
   }
-
-
-
-#endif
