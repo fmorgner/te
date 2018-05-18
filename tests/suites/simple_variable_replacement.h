@@ -8,7 +8,7 @@
 
 #include "te.h"
 
-namespace simple_variable_replacement
+namespace test_suite
   {
 
   void test_simple_variable_replacement()

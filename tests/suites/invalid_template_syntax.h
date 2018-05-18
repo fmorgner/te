@@ -8,7 +8,7 @@
 
 #include "te.h"
 
-namespace invalid_template_syntax
+namespace test_suite
   {
 
   void test_one_curly_brace_missing_at_the_start()
