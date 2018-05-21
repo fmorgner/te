@@ -13,7 +13,7 @@ namespace cutex
     {
     NamedSuite(std::string name, cute::suite suite)
       : m_sName{std::move(name)}
-      , m_vSuite{std::move(suite)}
+      , m_vSuite(std::move(suite))
       {
 
       }
